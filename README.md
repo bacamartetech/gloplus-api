@@ -1,2 +1,2 @@
-# goplus-api
-Go+ API
+# gloplus-api
+Glo+ API
