@@ -8,7 +8,7 @@ import AuthController from './controllers/AuthController';
 import ScheduleController from './controllers/ScheduleController';
 import auth from './middlewares/auth';
 
-mongoose.connect(mongoConfig.url, { useNewUrlParser: true, useFindAndModify: true });
+mongoose.connect(mongoConfig.url, { useNewUrlParser: true, useFindAndModify: true, useUnifiedTopology: true });
 
 const server = express();
 server.use(express.json());
