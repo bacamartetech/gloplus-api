@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { bool } from 'yup';
 
 const InteractionSchema = new mongoose.Schema({
   user: {
@@ -10,7 +9,7 @@ const InteractionSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Episode',
   },
-  like: bool,
+  like: Boolean,
   score: Number,
   review: String,
 }, {
