@@ -13,7 +13,10 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  avatar: String,
+  avatar: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Avatar',
+  },
 }, {
   timestamps: true,
 });

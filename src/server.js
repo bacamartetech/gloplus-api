@@ -16,6 +16,7 @@ server.use(express.json());
 server.get('/', (req, res) => res.send('Server is running!'));
 server.post('/register', AuthController.register);
 server.post('/session', AuthController.session);
+server.get('/avatar', AuthController.avatars);
 
 server.use(auth);
 

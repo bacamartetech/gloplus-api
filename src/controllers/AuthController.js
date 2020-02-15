@@ -1,7 +1,8 @@
 import * as Yup from 'yup';
 import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
 import User from '../schemas/User';
-
+import Avatar from '../schemas/Avatar';
 import authConfig from '../config/auth';
 
 class AuthController {
@@ -10,13 +11,16 @@ class AuthController {
       email: Yup.string().required().email(),
       password: Yup.string().required(),
       name: Yup.string().required(),
+      avatarId: Yup.string(),
     });
 
     if (!await schema.isValid(req.body)) {
       return res.status(400).json({ error: 'A validação dos campos falhou. Verifique se está tudo preenchido.' });
     }
 
-    const { email, password, name } = req.body;
+    const {
+      email, password, name, avatarId,
+    } = req.body;
 
     const userExists = await User.findOne({ email });
 
@@ -24,9 +28,16 @@ class AuthController {
       return res.status(400).json({ error: 'O e-mail informado já foi utilizado.' });
     }
 
-    const user = await User.create({ email, password, name });
+    let avatar = null;
+    if (avatarId) {
+      avatar = new mongoose.Types.ObjectId(avatarId);
+    }
 
-    return res.json(user);
+    const user = await User.create({
+      email, password, name, avatar,
+    });
+
+    return res.json(await user.populate('avatar').execPopulate());
   }
 
   async session(req, res) {
@@ -57,6 +68,11 @@ class AuthController {
       user: { id, email, name },
       token: jwt.sign({ id }, authConfig.secret, { expiresIn: '30d' }),
     });
+  }
+
+  async avatars(req, res) {
+    const avatars = await Avatar.find({}).select('name url');
+    res.json(avatars);
   }
 }
 

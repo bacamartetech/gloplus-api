@@ -2,6 +2,7 @@
   "main": "src/server.js",
   "scripts": {
     "scrapper": "nodemon src/scraper/index.js",
+    "seedAvatars": "sucrase-node src/seeds/seedAvatars.js",
     "start": "nodemon src/server.js"
   },
   "dependencies": {
