@@ -74,6 +74,12 @@ class AuthController {
     const avatars = await Avatar.find({}).select('name url');
     res.json(avatars);
   }
+
+  async profile(req, res) {
+    const user = await User.findById(req.userId);
+    await user.populate('avatar').execPopulate();
+    res.json(user);
+  }
 }
 
 export default new AuthController();

@@ -20,6 +20,7 @@ server.get('/avatar', AuthController.avatars);
 
 server.use(auth);
 
+server.get('/myProfile', AuthController.profile);
 server.get('/schedule', ScheduleController.listSchedules);
 server.get('/schedule/:id', ScheduleController.getSchedule);
 server.get('/schedule/:id/:date', ScheduleController.getEpisodesByScheduleAndDate);
