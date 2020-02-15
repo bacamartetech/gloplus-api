@@ -13,7 +13,7 @@ class AuthController {
     });
 
     if (!await schema.isValid(req.body)) {
-      return res.status(400).json({ error: 'Validation failed' });
+      return res.status(400).json({ error: 'A validação dos campos falhou. Verifique se está tudo preenchido.' });
     }
 
     const { email, password, name } = req.body;
@@ -21,7 +21,7 @@ class AuthController {
     const userExists = await User.findOne({ email });
 
     if (userExists) {
-      return res.status(400).json({ error: 'User already exists' });
+      return res.status(400).json({ error: 'O e-mail informado já foi utilizado.' });
     }
 
     const user = await User.create({ email, password, name });
@@ -36,7 +36,7 @@ class AuthController {
     });
 
     if (!await schema.isValid(req.body)) {
-      return res.status(400).json({ error: 'Validation failed' });
+      return res.status(400).json({ error: 'A validação dos campos falhou. Verifique se está tudo preenchido.' });
     }
 
     const { email, password } = req.body;
@@ -44,11 +44,11 @@ class AuthController {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(400).json({ error: 'User does not exists' });
+      return res.status(400).json({ error: 'O usuário especificado não existe.' });
     }
 
     if (user.password !== password) {
-      return res.status(401).json({ error: 'Password does not match' });
+      return res.status(401).json({ error: 'A senha informada está incorreta.' });
     }
 
     const { id, name } = user;
