@@ -28,8 +28,8 @@ class EpisodeController {
   async updateCurrentUserInteraction(req, res) {
     const schema = Yup.object().shape({
       like: Yup.boolean().required(),
-      score: Yup.number(),
-      review: Yup.string(),
+      score: Yup.number().nullable(true),
+      review: Yup.string().nullable(true),
     });
 
     if (!await schema.isValid(req.body)) {
@@ -56,9 +56,26 @@ class EpisodeController {
     currentUserInteraction.like = like;
     currentUserInteraction.score = score;
     currentUserInteraction.review = review;
-    currentUserInteraction.save();
+    await currentUserInteraction.save();
 
-    res.json(currentUserInteraction);
+    /* Update episode statistics - implement in a queue in future for performance. */
+
+    const interactions = await Interaction.find({ episode: episode._id });
+    const totalLikes = interactions.filter((i) => i.like).length;
+    const totalScores = interactions.filter((i) => i.score === 0 || i.score).length;
+    let scoreSum = null;
+    if (totalScores > 0) {
+      scoreSum = interactions
+        .filter((i) => i.score === 0 || i.score)
+        .map((i) => i.score)
+        .reduce((acc, value) => acc + value);
+      scoreSum /= totalScores;
+    }
+    episode.score = scoreSum;
+    episode.likes = totalLikes;
+    episode.save();
+
+    return res.json(currentUserInteraction);
   }
 }
 

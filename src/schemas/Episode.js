@@ -16,6 +16,8 @@ const EpisodeSchema = new mongoose.Schema({
     key: String,
     value: String,
   }],
+  likes: Number,
+  score: Number,
 }, {
   timestamps: true,
 });
