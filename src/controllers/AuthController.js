@@ -11,7 +11,6 @@ class AuthController {
       email: Yup.string().required().email(),
       password: Yup.string().required(),
       name: Yup.string().required(),
-      avatarId: Yup.string(),
     });
 
     if (!await schema.isValid(req.body)) {
@@ -19,7 +18,7 @@ class AuthController {
     }
 
     const {
-      email, password, name, avatarId,
+      email, password, name,
     } = req.body;
 
     const userExists = await User.findOne({ email });
@@ -28,13 +27,10 @@ class AuthController {
       return res.status(400).json({ error: 'O e-mail informado já foi utilizado.' });
     }
 
-    let avatar = null;
-    if (avatarId) {
-      avatar = new mongoose.Types.ObjectId(avatarId);
-    }
+    const avatar = await Avatar.findOne({});
 
     const user = await User.create({
-      email, password, name, avatar,
+      email, password, name, avatar: avatar._id,
     });
 
     return res.json(await user.populate('avatar').execPopulate());
@@ -79,6 +75,41 @@ class AuthController {
     const user = await User.findById(req.userId);
     await user.populate('avatar').execPopulate();
     res.json(user);
+  }
+
+  async updateProfile(req, res) {
+    const schema = Yup.object().shape({
+      password: Yup.string().required(),
+      name: Yup.string().required(),
+      avatarId: Yup.string(),
+    });
+
+    if (!await schema.isValid(req.body)) {
+      return res.status(400).json({ error: 'A validação dos campos falhou. Verifique se está tudo preenchido.' });
+    }
+
+    const {
+      password, name, avatarId,
+    } = req.body;
+
+    let avatar = null;
+    if (avatarId) {
+      avatar = new mongoose.Types.ObjectId(avatarId);
+    }
+
+    const user = await User.findById(req.userId);
+
+    if (!user) {
+      return res.status(400).json({ error: 'O usuário atual não existe. Provalmente foi excluído.' });
+    }
+
+    user.password = password;
+    user.name = name;
+    user.avatar = avatar;
+    user.save();
+    await user.populate('avatar').execPopulate();
+
+    return res.json(user);
   }
 }
 

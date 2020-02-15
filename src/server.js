@@ -9,7 +9,9 @@ import ScheduleController from './controllers/ScheduleController';
 import EpisodeController from './controllers/EpisodeController';
 import auth from './middlewares/auth';
 
-mongoose.connect(mongoConfig.url, { useNewUrlParser: true, useFindAndModify: true, useUnifiedTopology: true });
+mongoose.connect(
+  mongoConfig.url, { useNewUrlParser: true, useFindAndModify: true, useUnifiedTopology: true },
+);
 
 const server = express();
 server.use(express.json());
@@ -22,6 +24,7 @@ server.get('/avatar', AuthController.avatars);
 server.use(auth);
 
 server.get('/myProfile', AuthController.profile);
+server.put('/myProfile', AuthController.updateProfile);
 server.get('/schedule', ScheduleController.listSchedules);
 server.get('/schedule/:id', ScheduleController.getSchedule);
 server.get('/schedule/:id/:date', ScheduleController.getEpisodesByScheduleAndDate);
