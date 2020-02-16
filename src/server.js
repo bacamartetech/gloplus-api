@@ -44,6 +44,5 @@ app.get('/schedule', ScheduleController.listSchedules);
 app.get('/schedule/:id', ScheduleController.getSchedule);
 app.get('/schedule/:id/:date', ScheduleController.getEpisodesByScheduleAndDate);
 app.get('/episode/:id', EpisodeController.getEpisode);
-app.put('/episode/:id', EpisodeController.updateCurrentUserInteraction);
 
 server.listen(3000);

@@ -24,61 +24,6 @@ class EpisodeController {
       currentUserInteraction,
     });
   }
-
-  async updateCurrentUserInteraction(req, res) {
-    const schema = Yup.object().shape({
-      like: Yup.boolean().required(),
-      score: Yup.number().nullable(true),
-      review: Yup.string().nullable(true),
-    });
-
-    if (!await schema.isValid(req.body)) {
-      return res.status(400).json({ error: 'A validação dos campos falhou. Verifique se os dados do objeto estão corretos.' });
-    }
-
-    const episode = await Episode.findById(req.params.id);
-    let currentUserInteraction = await Interaction.findOne({
-      episode: episode._id,
-      user: new mongoose.Types.ObjectId(req.userId),
-    });
-
-    if (!currentUserInteraction) {
-      currentUserInteraction = await Interaction.create({
-        episode: episode._id,
-        user: new mongoose.Types.ObjectId(req.userId),
-        like: false,
-        score: null,
-        review: null,
-      });
-    }
-
-    const { like, score, review } = req.body;
-    currentUserInteraction.like = like;
-    currentUserInteraction.score = score;
-    currentUserInteraction.review = review;
-    await currentUserInteraction.save();
-
-    /* Update episode statistics - implement in a queue in future for performance. */
-
-    const interactions = await Interaction.find({ episode: episode._id });
-    const totalLikes = interactions.filter((i) => i.like).length;
-    const totalScores = interactions.filter((i) => i.score === 0 || i.score).length;
-    let scoreSum = null;
-    if (totalScores > 0) {
-      scoreSum = interactions
-        .filter((i) => i.score === 0 || i.score)
-        .map((i) => i.score)
-        .reduce((acc, value) => acc + value);
-      scoreSum /= totalScores;
-    }
-    episode.score = scoreSum;
-    episode.likes = totalLikes;
-    episode.save();
-
-    req.io.in(episode._id).emit('statsUpdated', { score: episode.score, likes: episode.likes });
-
-    return res.json(currentUserInteraction);
-  }
 }
 
 export default new EpisodeController();

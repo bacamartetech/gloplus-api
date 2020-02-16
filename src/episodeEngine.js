@@ -4,6 +4,7 @@ import authConfig from './config/auth';
 
 import User from './schemas/User';
 import Episode from './schemas/Episode';
+import Interaction from './schemas/Interaction';
 import EpisodeChat from './schemas/EpisodeChat';
 
 export default function chatEngine(io) {
@@ -56,12 +57,27 @@ export default function chatEngine(io) {
           });
         }
 
+        let currentUserInteraction = await Interaction.findOne({
+          episode: episode._id,
+          user: connectedUser._id,
+        });
+        if (!currentUserInteraction) {
+          currentUserInteraction = await Interaction.create({
+            episode: episode._id,
+            user: connectedUser._id,
+            like: false,
+            score: null,
+            review: null,
+          });
+        }
+
         await episodeChat.populate('messages.user').execPopulate();
         await episodeChat.populate('messages.user.avatar').execPopulate();
 
         socket.emit('episodeInfo', episode);
         socket.emit('statsUpdated', { score: episode.score, likes: episode.likes });
         socket.emit('chatHistory', episodeChat);
+        socket.emit('myInteraction', currentUserInteraction);
 
         console.log(`User ${connectedUser.name} joined the rom ${episode.title}`);
         console.log(`${episode.userCount} users in the room`);
@@ -110,6 +126,50 @@ export default function chatEngine(io) {
 
       console.log(`User ${connectedUser.name} sent a message to ${data.episodeId}: ${data.message}`);
       io.in(data.episodeId).emit('chatMessage', { message: episodeChat.messages[episodeChat.messages.length - 1] });
+    });
+
+    socket.on('updateInteraction', async (data) => {
+      const episode = await Episode.findById(data.episodeId);
+
+      let currentUserInteraction = await Interaction.findOne({
+        episode: episode._id,
+        user: connectedUser._id,
+      });
+
+      if (!currentUserInteraction) {
+        currentUserInteraction = await Interaction.create({
+          episode: episode._id,
+          user: connectedUser._id,
+          like: false,
+          score: null,
+          review: null,
+        });
+      }
+
+      const { like, score, review } = data;
+      currentUserInteraction.like = like;
+      currentUserInteraction.score = score;
+      currentUserInteraction.review = review;
+      await currentUserInteraction.save();
+
+      /* Update episode statistics - implement in a queue in future for performance. */
+
+      const interactions = await Interaction.find({ episode: episode._id });
+      const totalLikes = interactions.filter((i) => i.like).length;
+      const totalScores = interactions.filter((i) => i.score === 0 || i.score).length;
+      let scoreSum = null;
+      if (totalScores > 0) {
+        scoreSum = interactions
+          .filter((i) => i.score === 0 || i.score)
+          .map((i) => i.score)
+          .reduce((acc, value) => acc + value);
+        scoreSum /= totalScores;
+      }
+      episode.score = scoreSum;
+      episode.likes = totalLikes;
+      episode.save();
+
+      io.in(episode._id).emit('statsUpdated', { score: episode.score, likes: episode.likes });
     });
   });
 }
