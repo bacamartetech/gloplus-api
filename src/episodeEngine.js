@@ -125,7 +125,8 @@ export default function chatEngine(io) {
       await episodeChat.populate('messages.user.avatar').execPopulate();
 
       console.log(`User ${connectedUser.name} sent a message to ${data.episodeId}: ${data.message}`);
-      io.in(data.episodeId).emit('chatMessage', { message: episodeChat.messages[episodeChat.messages.length - 1] });
+      // io.in(data.episodeId).emit('chatMessage', { message: episodeChat.messages[episodeChat.messages.length - 1] });
+      io.in(data.episodeId).emit('chatHistory', episodeChat);
     });
 
     socket.on('updateInteraction', async (data) => {
