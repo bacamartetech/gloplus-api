@@ -75,6 +75,8 @@ class EpisodeController {
     episode.likes = totalLikes;
     episode.save();
 
+    req.io.in(episode._id).emit('statsUpdated', { score: episode.score, likes: episode.likes });
+
     return res.json(currentUserInteraction);
   }
 }
