@@ -152,6 +152,8 @@ export default function chatEngine(io) {
       currentUserInteraction.review = review;
       await currentUserInteraction.save();
 
+      socket.emit('myInteraction', currentUserInteraction);
+
       /* Update episode statistics - implement in a queue in future for performance. */
 
       const interactions = await Interaction.find({ episode: episode._id });
