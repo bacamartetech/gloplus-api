@@ -27,7 +27,8 @@ class AuthController {
       return res.status(400).json({ error: 'O e-mail informado já foi utilizado.' });
     }
 
-    const avatar = await Avatar.findOne({});
+    const avatars = await Avatar.find({});
+    const avatar = avatars[Math.floor(Math.random() * avatars.length)];
 
     const user = await User.create({
       email, password, name, avatar: avatar._id,
