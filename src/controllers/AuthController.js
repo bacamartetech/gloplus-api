@@ -82,6 +82,7 @@ class AuthController {
       password: Yup.string().required(),
       name: Yup.string().required(),
       avatarId: Yup.string(),
+      scheduleId: Yup.string().nullable(),
     });
 
     if (!await schema.isValid(req.body)) {
@@ -89,12 +90,17 @@ class AuthController {
     }
 
     const {
-      password, name, avatarId,
+      password, name, avatarId, scheduleId,
     } = req.body;
 
     let avatar = null;
     if (avatarId) {
       avatar = new mongoose.Types.ObjectId(avatarId);
+    }
+
+    let schedule = null;
+    if (scheduleId) {
+      schedule = new mongoose.Types.ObjectId(scheduleId);
     }
 
     const user = await User.findById(req.userId);
@@ -106,8 +112,10 @@ class AuthController {
     user.password = password;
     user.name = name;
     user.avatar = avatar;
+    user.schedule = schedule;
     user.save();
     await user.populate('avatar').execPopulate();
+    await user.populate('schedule').execPopulate();
 
     return res.json(user);
   }

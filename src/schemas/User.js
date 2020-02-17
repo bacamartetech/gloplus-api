@@ -17,6 +17,10 @@ const UserSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Avatar',
   },
+  schedule: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Schedule',
+  },
   socket: String,
 }, {
   timestamps: true,
