@@ -62,7 +62,7 @@ class AuthController {
     }
 
     if (!await bcrypt.compare(password, user.password)) {
-      return res.status(401).json({ error: 'A senha informada está incorreta.' });
+      return res.status(400).json({ error: 'A senha informada está incorreta.' });
     }
 
     return res.json({
