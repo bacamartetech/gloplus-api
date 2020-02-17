@@ -1,6 +1,7 @@
 import * as Yup from 'yup';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
 import User from '../schemas/User';
 import Avatar from '../schemas/Avatar';
 import authConfig from '../config/auth';
@@ -54,13 +55,13 @@ class AuthController {
 
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select('+password');
 
     if (!user) {
       return res.status(400).json({ error: 'O usuário especificado não existe.' });
     }
 
-    if (user.password !== password) {
+    if (!await bcrypt.compare(password, user.password)) {
       return res.status(401).json({ error: 'A senha informada está incorreta.' });
     }
 
