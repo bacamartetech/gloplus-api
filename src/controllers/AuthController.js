@@ -33,7 +33,12 @@ class AuthController {
       email, password, name, avatar: avatar._id,
     });
 
-    return res.json(await user.populate('avatar').execPopulate());
+    return res.json({
+      id: user._id,
+      email,
+      name: user.name,
+      token: jwt.sign({ id: user._id }, authConfig.secret, { expiresIn: '30d' }),
+    });
   }
 
   async session(req, res) {
@@ -58,11 +63,11 @@ class AuthController {
       return res.status(401).json({ error: 'A senha informada está incorreta.' });
     }
 
-    const { id, name } = user;
-
     return res.json({
-      user: { id, email, name },
-      token: jwt.sign({ id }, authConfig.secret, { expiresIn: '30d' }),
+      id: user._id,
+      email,
+      name: user.name,
+      token: jwt.sign({ id: user._id }, authConfig.secret, { expiresIn: '30d' }),
     });
   }
 
