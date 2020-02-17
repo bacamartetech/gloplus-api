@@ -40,6 +40,7 @@ app.use(auth);
 
 app.get('/myProfile', AuthController.profile);
 app.put('/myProfile', AuthController.updateProfile);
+app.put('/mySchedule', AuthController.updateProfileSchedule);
 app.get('/schedule', ScheduleController.listSchedules);
 app.get('/schedule/:id', ScheduleController.getSchedule);
 app.get('/schedule/:id/:date', ScheduleController.getEpisodesByScheduleAndDate);

@@ -74,6 +74,7 @@ class AuthController {
   async profile(req, res) {
     const user = await User.findById(req.userId);
     await user.populate('avatar').execPopulate();
+    await user.populate('schedule').execPopulate();
     res.json(user);
   }
 
@@ -112,6 +113,36 @@ class AuthController {
     user.password = password;
     user.name = name;
     user.avatar = avatar;
+    user.schedule = schedule;
+    user.save();
+    await user.populate('avatar').execPopulate();
+    await user.populate('schedule').execPopulate();
+
+    return res.json(user);
+  }
+
+  async updateProfileSchedule(req, res) {
+    const schema = Yup.object().shape({
+      scheduleId: Yup.string().nullable(),
+    });
+
+    if (!await schema.isValid(req.body)) {
+      return res.status(400).json({ error: 'A validação dos campos falhou. Verifique se está tudo preenchido.' });
+    }
+
+    const { scheduleId } = req.body;
+
+    let schedule = null;
+    if (scheduleId) {
+      schedule = new mongoose.Types.ObjectId(scheduleId);
+    }
+
+    const user = await User.findById(req.userId);
+
+    if (!user) {
+      return res.status(400).json({ error: 'O usuário atual não existe. Provalmente foi excluído.' });
+    }
+
     user.schedule = schedule;
     user.save();
     await user.populate('avatar').execPopulate();
