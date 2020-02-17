@@ -69,7 +69,7 @@ class AuthController {
       id: user._id,
       email,
       name: user.name,
-      token: jwt.sign({ id: user._id }, authConfig.secret, { expiresIn: '30d' }),
+      token: jwt.sign({ id: user._id }, authConfig.secret, { expiresIn: '90d' }),
     });
   }
 
