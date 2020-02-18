@@ -54,7 +54,7 @@ app.get('/share/:id', async (req, res) => {
 });
 
 app.get('/', async (req, res) => {
-  res.render('share', { layout: false });
+  res.render('landing', { layout: false });
 });
 
 app.post('/register', AuthController.register);
