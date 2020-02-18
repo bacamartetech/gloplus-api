@@ -53,8 +53,10 @@ app.get('/share/:id', async (req, res) => {
   });
 });
 
+app.get('/', async (req, res) => {
+  res.render('share', { layout: false });
+});
 
-app.get('/', (req, res) => res.send('Server is running!'));
 app.post('/register', AuthController.register);
 app.post('/session', AuthController.session);
 app.get('/avatar', AuthController.avatars);
