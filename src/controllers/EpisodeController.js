@@ -1,4 +1,3 @@
-import * as Yup from 'yup';
 import mongoose from 'mongoose';
 import Episode from '../schemas/Episode';
 import Interaction from '../schemas/Interaction';

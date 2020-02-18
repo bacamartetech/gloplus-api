@@ -4,6 +4,7 @@ import http from 'http';
 import express from 'express';
 import cors from 'cors';
 import socketio from 'socket.io';
+import handlebars from 'express-handlebars';
 import mongoose from 'mongoose';
 import mongoConfig from './config/mongo';
 
@@ -13,6 +14,10 @@ import EpisodeController from './controllers/EpisodeController';
 import auth from './middlewares/auth';
 
 import episodeEngine from './episodeEngine';
+
+import Episode from './schemas/Episode';
+
+import formatDate from './utils/formatDate';
 
 mongoose.connect(
   mongoConfig.url, { useNewUrlParser: true, useFindAndModify: true, useUnifiedTopology: true },
@@ -30,6 +35,24 @@ app.use((req, res, next) => {
   req.io = io;
   return next();
 });
+
+app.set('view engine', 'handlebars');
+app.engine('handlebars', handlebars({}));
+
+app.get('/share/:id', async (req, res) => {
+  const episode = await Episode.findById(req.params.id);
+  res.render('share', {
+    layout: false,
+    date: formatDate(episode.date),
+    logo: episode.logo,
+    time: episode.time,
+    title: episode.title,
+    thumb: episode.thumb,
+    link: episode.link,
+    description: episode.description,
+  });
+});
+
 
 app.get('/', (req, res) => res.send('Server is running!'));
 app.post('/register', AuthController.register);
