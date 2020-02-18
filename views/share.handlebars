@@ -1,11 +1,26 @@
-
-<h1>
-  {{date}}{{time}}
-  <img src={{logo}}></img>
-  {{title}}
-</h1>
-<img src={{thumb}}></img>
-<p>
-  {{description}}
-</p>
-<img src="https://cdn.glitch.com/e4d2a036-adb2-43f5-93f3-704f33cc7c0a%2Fgloplus.png?v=1581986019854">BAIXE JÁ!</img>
+<!doctype html>
+<html lang="en" style="height: 100%;">
+<head>
+  <meta charset="utf-8">
+  <title>GLO+ - {{title}}</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body style="height: 100%; background: rgb(155,203,201); background: linear-gradient(180deg, rgba(155,203,201,1) 0%, rgba(97,97,97,1) 100%);">
+  <div style="display: flex; flex-direction: column; align-items: center; margin-top: 15px;">
+    <h1 style="text-transform: uppercase;">
+      <img src={{logo}} style="border-radius: 50%;"></img> {{title}}
+    </h1>
+    <h2>{{date}} {{time}}</h2>
+    <figure class="figure">
+      <img src={{thumb}} class="figure-img img-fluid rounded" alt="...">
+      <figcaption class="figure-caption" style="text-align: center; color: white;">{{description}}</figcaption>
+    </figure>
+    <div style="display: flex; flex-direction: row; align-items: center; border: 1px solid #ccc; padding: 10px; border-radius: 10px;">
+      <img style="width: 100px" src="https://cdn.glitch.com/e4d2a036-adb2-43f5-93f3-704f33cc7c0a%2Fgloplus.png?v=1581986019854"></img>
+      <p style="padding: 15px; text-align: center;">
+        GLO+<br/>Breve disponível para download!
+      </p>
+    </div>
+  </div>
+</body>
+</html>
