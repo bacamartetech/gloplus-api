@@ -8,4 +8,4 @@ App to help people to interact online while watching TV.
 * `yarn` to install project dependencies.
 * `yarn run seedAvatars` to seed avatars in mongo.
 * `yarn run scrapper` to scrap schedule and episodes.
-* `yarn run start` to run api.
+* `yarn run start` to run api at port 3000.
