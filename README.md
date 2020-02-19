@@ -4,6 +4,8 @@ Glo+ Node.js API
 ## Description
 App to help people to interact online while watching TV Globo.
 
+## Running the API
+
 * `docker run --name mongoglobo -p 27017:27017 -d -t mongo` or setup your mongo instance manually.
 * Edit `.env` file with your `MONGO_URL`.
 * `yarn` to install project dependencies.
