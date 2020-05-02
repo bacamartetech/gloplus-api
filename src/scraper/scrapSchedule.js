@@ -6,6 +6,7 @@ export default async function scrapSchedule(sourceUrl) {
   const $ = cheerio.load(response.data);
 
   const schedule = $('div.schedule-items').map((itemsIndex, itemsValue) => $('.schedule-item-inner', itemsValue).map((itemIndex, itemValue) => ({
+    order: itemIndex + 1,
     date: $(itemsValue).attr('data-container-date'),
     logo: $('.schedule-item-header-logo img', itemValue).attr('src'),
     time: $('.schedule-item-header-info time', itemValue).text(),

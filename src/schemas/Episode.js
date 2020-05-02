@@ -5,6 +5,7 @@ const EpisodeSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Schedule',
   },
+  order: Number,
   date: Number,
   time: String,
   logo: String,

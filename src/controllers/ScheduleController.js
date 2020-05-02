@@ -19,7 +19,7 @@ class ScheduleController {
     const episodes = await Episode.find({
       schedule: schedule._id,
       date,
-    }).sort('time');
+    }).sort('order');
     res.json(episodes);
   }
 }
