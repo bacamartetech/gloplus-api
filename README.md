@@ -1,11 +1,6 @@
 # Glo+ API
 Glo+ Node.js API
 
-## Description
-App to help people to interact online while watching TV Globo.
-
-**This app was developed during a hackathon. It's not production ready.**
-
 ## Running the API
 Setup a mongo instance. You can use docker:
 ```
