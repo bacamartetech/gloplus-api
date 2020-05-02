@@ -12,7 +12,7 @@ Install the dependencies:
 ```
 yarn
 ```
-Seed mongo with avatars and scraped schedule:
+Seed mongo with avatars and scraped schedules:
 ```
   yarn run seedAvatars
   yarn run scrapper
