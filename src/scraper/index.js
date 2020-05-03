@@ -32,11 +32,15 @@ async function scrapAll(sources) {
       schedule = await Schedule.create(source);
     }
 
-    const savedDates = schedule.dates.filter(onlyUnique);
+    const savedDates = schedule.dates.map((date) => date.value).filter(onlyUnique);
     const scrapedDates = source.episodes.map((e) => e.date).filter(onlyUnique);
     const newDates = scrapedDates.filter((x) => !savedDates.includes(x));
 
-    schedule.dates.push(...newDates);
+    schedule.dates.push(...newDates.map((date) => ({
+      value: date,
+      start: source.episodes.filter((e) => e.date === date)[0].time,
+      end: source.episodes.filter((e) => e.date === date).slice(-1)[0].time,
+    })));
     await schedule.save();
 
     const episodesToAdd = source.episodes
